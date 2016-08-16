@@ -67,10 +67,13 @@ function domain_xmlsitemap_query_xmlsitemap_generate_alter(QueryAlterableInterfa
   $domain_alias = $query->leftJoin('domain_access', 'da', "x.type = 'node' AND x.id = da.nid");
   $domain_condition = db_or();
   $domain_condition->isNull('da.gid');
-  $domain_condition->condition(db_and()
+  // Ignore the 'send to all affiliates' option, we do not want to have
+  // duplicates in the sitemaps, unless the content is really set to be owned
+  // by multiple domains.
+  /*$domain_condition->condition(db_and()
     ->condition('da.gid', 0)
     ->condition('da.realm', 'domain_site')
-  );
+  );*/
   $domain_condition->condition(db_and()
     ->condition('da.gid', $sitemap->context['domain'])
     ->condition('da.realm', 'domain_id')
